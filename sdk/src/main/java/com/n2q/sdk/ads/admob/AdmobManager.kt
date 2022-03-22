@@ -46,7 +46,7 @@ class AdmobManager {
     fun loadAd(activity: Activity, idAd: String, adFormat: AdFormat, callback: AdCallback? = null) {
         BillingManager.instance().verifyPurchase(object : VerifyPurchaseCallback {
             override fun onPurchase(isPurchased: Boolean) {
-                if (!isPurchased) return
+                if (isPurchased) return
                 activity.runOnUiThread {
 
                     when (adFormat) {
