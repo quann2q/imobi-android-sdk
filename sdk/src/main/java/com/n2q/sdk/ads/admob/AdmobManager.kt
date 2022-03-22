@@ -1,7 +1,6 @@
 package com.n2q.sdk.ads.admob
 
 import android.app.Activity
-import android.util.Log
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -9,6 +8,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.n2q.sdk.billing.BillingManager
+import com.n2q.sdk.billing.callback.VerifyPurchaseCallback
 
 class AdmobManager {
 
@@ -44,21 +44,28 @@ class AdmobManager {
      *          AdRewardedCallback      for load Reward
      */
     fun loadAd(activity: Activity, idAd: String, adFormat: AdFormat, callback: AdCallback? = null) {
+        BillingManager.instance().verifyPurchase(object : VerifyPurchaseCallback {
+            override fun onPurchase(isPurchased: Boolean) {
+                if (!isPurchased) return
+                activity.runOnUiThread {
 
-        if (BillingManager.isPurchased()) return
+                    when (adFormat) {
+                        AdFormat.APP_OPEN ->
+                            loadAppOpen(activity, idAd, callback as? AdAppOpenCallback)
+                        AdFormat.INTERSTITIAL ->
+                            loadInterstitial(activity, idAd, callback as? AdInterstitialCallback)
+                        AdFormat.BANNER ->
+                            loadBanner(activity, idAd, callback as? AdBannerCallback)
+                        AdFormat.NATIVE ->
+                            loadNative(activity, idAd, callback as? AdNativeCallback)
+                        AdFormat.REWARDED ->
+                            loadRewarded(activity, idAd, callback as? AdRewardedCallback)
+                    }
 
-        when (adFormat) {
-            AdFormat.APP_OPEN ->
-                loadAppOpen(activity, idAd, callback as? AdAppOpenCallback)
-            AdFormat.INTERSTITIAL ->
-                loadInterstitial(activity, idAd, callback as? AdInterstitialCallback)
-            AdFormat.BANNER ->
-                loadBanner(activity, idAd, callback as? AdBannerCallback)
-            AdFormat.NATIVE ->
-                loadNative(activity, idAd, callback as? AdNativeCallback)
-            AdFormat.REWARDED ->
-                loadRewarded(activity, idAd, callback as? AdRewardedCallback)
-        }
+                }
+            }
+
+        })
 
     }
 

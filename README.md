@@ -10,15 +10,15 @@
     + In-app purchase (Type INAPP)
     + Subscription (Type SUBS)
    
- - Encode
-    + 
-   
  - Firebase Tracking
     +
 
  - Release App with Shell Scrip
     +
    
+- Encode
+   +
+
 
 02. Add SDK to App
 

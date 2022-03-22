@@ -38,17 +38,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun adProcess() {
-        val idBanner = getString(R.string.banner_test)
-        AdmobManager.instance().loadAd(this, idBanner, AdFormat.BANNER)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            AdmobManager.instance().showBannerAd(this, idBanner, object : AdBannerShowCallback {
-                override fun onReady(adView: AdView) {
-                    binding.layoutAdBanner.removeAllViews()
-                    binding.layoutAdBanner.addView(adView)
-                }
-            })
-        }, 5000)
     }
 
 }
