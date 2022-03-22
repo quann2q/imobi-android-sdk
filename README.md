@@ -18,3 +18,13 @@
 
  - Release App with Shell Scrip
     +
+   
+
+02. Add SDK to App
+
+2.1. module -> build.gradle
+````
+   // Admob
+   implementation 'com.google.android.gms:play-services-ads:20.6.0'
+   
+````
