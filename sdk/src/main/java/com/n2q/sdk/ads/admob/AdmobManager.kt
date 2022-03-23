@@ -5,33 +5,19 @@ import com.google.android.gms.ads.*
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.n2q.sdk.billing.BillingManager
-import com.n2q.sdk.billing.callback.VerifyPurchaseCallback
+import com.n2q.sdk.ads.admob.MobileAds.AdCallback
 
 class AdmobManager {
-
-    companion object {
-        private const val TAG = "AdmobManager"
-
-        private var mInstance: AdmobManager? = null
-
-        fun instance(): AdmobManager {
-            if (mInstance == null) {
-                mInstance = AdmobManager()
-            }
-
-            return mInstance as AdmobManager
-        }
-
-    }
 
     private val mAdRequest = AdRequest.Builder().build()
 
     private var mAppOpenAd: AppOpenAd? = null
-    private var mMapInterstitialAd = HashMap<String, InterstitialAd?>()
     private var mMapBannerAd = HashMap<String, AdView?>()
+    private var mMapInterstitialAd = HashMap<String, InterstitialAd?>()
+    private var mMapNativeAd = HashMap<String, NativeAd?>()
     private var mMapRewardedAd = HashMap<String, RewardedAd?>()
 
     /**
@@ -43,39 +29,30 @@ class AdmobManager {
      *          AdNativeCallback        for load Native
      *          AdRewardedCallback      for load Reward
      */
-    fun loadAd(activity: Activity, idAd: String, adFormat: AdFormat, callback: AdCallback? = null) {
-        BillingManager.instance().verifyPurchase(object : VerifyPurchaseCallback {
-            override fun onPurchase(isPurchased: Boolean) {
-                if (isPurchased) return
-                activity.runOnUiThread {
+    fun loadAd(activity: Activity, adFormat: AdFormat, idAd: String = "", callback: AdCallback? = null) {
 
-                    when (adFormat) {
-                        AdFormat.APP_OPEN ->
-                            loadAppOpen(activity, idAd, callback as? AdAppOpenCallback)
-                        AdFormat.INTERSTITIAL ->
-                            loadInterstitial(activity, idAd, callback as? AdInterstitialCallback)
-                        AdFormat.BANNER ->
-                            loadBanner(activity, idAd, callback as? AdBannerCallback)
-                        AdFormat.NATIVE ->
-                            loadNative(activity, idAd, callback as? AdNativeCallback)
-                        AdFormat.REWARDED ->
-                            loadRewarded(activity, idAd, callback as? AdRewardedCallback)
-                    }
-
-                }
-            }
-
-        })
+        when (adFormat) {
+            AdFormat.APP_OPEN ->
+                loadAppOpen(activity, idAd, callback)
+            AdFormat.INTERSTITIAL ->
+                loadInterstitial(activity, idAd, callback)
+            AdFormat.BANNER ->
+                loadBanner(activity, idAd, callback)
+            AdFormat.NATIVE ->
+                loadNative(activity, idAd, callback)
+            AdFormat.REWARDED ->
+                loadRewarded(activity, idAd, callback)
+        }
 
     }
 
-    private fun loadAppOpen(activity: Activity, idAd: String, callback: AdAppOpenCallback? = null) {
+    private fun loadAppOpen(activity: Activity, idAd: String, callback: AdCallback? = null) {
         mAppOpenAd = null
         AppOpenAd.load(activity, idAd, mAdRequest, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, object : AppOpenAd.AppOpenAdLoadCallback() {
 
             override fun onAdLoaded(appOpenAd: AppOpenAd) {
                 mAppOpenAd = appOpenAd
-                callback?.onLoaded(appOpenAd)
+                callback?.onLoaded()
             }
 
             override fun onAdFailedToLoad(error: LoadAdError) {
@@ -85,13 +62,13 @@ class AdmobManager {
         })
     }
 
-    private fun loadInterstitial(activity: Activity, idAd: String, callback: AdInterstitialCallback? = null) {
+    private fun loadInterstitial(activity: Activity, idAd: String, callback: AdCallback? = null) {
         mMapInterstitialAd[idAd] = null
         InterstitialAd.load(activity, idAd, mAdRequest, object : InterstitialAdLoadCallback() {
 
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 mMapInterstitialAd[idAd] = interstitialAd
-                callback?.onLoaded(interstitialAd)
+                callback?.onLoaded()
             }
 
             override fun onAdFailedToLoad(error: LoadAdError) {
@@ -101,7 +78,7 @@ class AdmobManager {
         })
     }
 
-    private fun loadBanner(activity: Activity, idAd: String, callback: AdBannerCallback? = null) {
+    private fun loadBanner(activity: Activity, idAd: String, callback: AdCallback? = null) {
         mMapBannerAd[idAd] = null
         val adView = AdView(activity)
         adView.adSize = AdSize.BANNER
@@ -114,15 +91,19 @@ class AdmobManager {
 
             override fun onAdLoaded() {
                 mMapBannerAd[idAd] = adView
-                callback?.onLoaded(adView)
+                callback?.onLoaded()
             }
 
         }
     }
 
-    private fun loadNative(activity: Activity, idAd: String, callback: AdNativeCallback? = null) {
+    private fun loadNative(activity: Activity, idAd: String, callback: AdCallback? = null) {
+        mMapNativeAd[idAd] = null
         AdLoader.Builder(activity, idAd)
-            .forNativeAd { nativeAd -> callback?.onLoaded(nativeAd) }
+            .forNativeAd { nativeAd ->
+                mMapNativeAd[idAd] = nativeAd
+                callback?.onLoaded()
+            }
             .withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     callback?.onLoadError(error)
@@ -131,12 +112,12 @@ class AdmobManager {
             .build()
     }
 
-    private fun loadRewarded(activity: Activity, idAd: String, callback: AdRewardedCallback? = null) {
+    private fun loadRewarded(activity: Activity, idAd: String, callback: AdCallback? = null) {
         mMapRewardedAd[idAd] = null
         RewardedAd.load(activity, idAd, mAdRequest, object : RewardedAdLoadCallback() {
             override fun onAdLoaded(rewardedAd: RewardedAd) {
                 mMapRewardedAd[idAd] = rewardedAd
-                callback?.onLoaded(rewardedAd)
+                callback?.onLoaded()
             }
 
             override fun onAdFailedToLoad(error: LoadAdError) {
@@ -150,48 +131,50 @@ class AdmobManager {
      * SHOW AD
      */
 
-    fun showAppOpenAd(activity: Activity, idAd: String) {
-        mAppOpenAd?.show(activity)
-
-        loadAd(activity, idAd, AdFormat.APP_OPEN)
-    }
-
-    fun showAppOpenAd(activity: Activity, appOpenAd: AppOpenAd) {
-        appOpenAd.show(activity)
-
-        loadAd(activity, appOpenAd.adUnitId, AdFormat.APP_OPEN)
+    fun showAppOpenAd(activity: Activity) {
+        mAppOpenAd?.apply {
+            show(activity)
+            loadAd(activity, AdFormat.APP_OPEN, this.adUnitId)
+        }
     }
 
     fun showInterstitialAd(activity: Activity, idAd: String) {
-        mMapInterstitialAd[idAd]?.show(activity)
-
-        loadAd(activity, idAd, AdFormat.INTERSTITIAL)
+        showInterstitialAd(activity, mMapInterstitialAd[idAd])
     }
 
-    fun showInterstitialAd(activity: Activity, interstitialAd: InterstitialAd) {
-        interstitialAd.show(activity)
-
-        loadAd(activity, interstitialAd.adUnitId, AdFormat.INTERSTITIAL)
+    private fun showInterstitialAd(activity: Activity, interstitialAd: InterstitialAd?) {
+        interstitialAd?.apply {
+            show(activity)
+            loadAd(activity, AdFormat.INTERSTITIAL, this.adUnitId)
+        }
     }
 
-    fun showBannerAd(activity: Activity, idAd: String, callback: AdBannerShowCallback) {
+    fun bannerAd(activity: Activity, idAd: String): AdView? {
         mMapBannerAd[idAd]?.apply {
-            callback.onReady(this)
+            loadAd(activity, AdFormat.BANNER, idAd)
+            return this
+        }
+        return null
+    }
+
+    fun nativeAd(activity: Activity, idAd: String): NativeAd? {
+        mMapNativeAd[idAd]?.apply {
+            loadAd(activity, AdFormat.NATIVE, idAd)
+            return this
         }
 
-        loadAd(activity, idAd, AdFormat.BANNER)
+        return null
     }
 
     fun showRewardedAd(activity: Activity, idAd: String, callback: OnUserEarnedRewardListener) {
-        mMapRewardedAd[idAd]?.show(activity, callback)
-
-        loadAd(activity, idAd, AdFormat.REWARDED)
+        showRewardedAd(activity, mMapRewardedAd[idAd], callback)
     }
 
-    fun showRewardedAd(activity: Activity, rewardedAd: RewardedAd, callback: OnUserEarnedRewardListener) {
-        rewardedAd.show(activity, callback)
-
-        loadAd(activity, rewardedAd.adUnitId, AdFormat.REWARDED)
+    private fun showRewardedAd(activity: Activity, rewardedAd: RewardedAd?, callback: OnUserEarnedRewardListener) {
+        rewardedAd?.apply {
+            show(activity, callback)
+            loadAd(activity, AdFormat.REWARDED, this.adUnitId)
+        }
     }
 
 

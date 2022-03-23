@@ -38,7 +38,20 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun adProcess() {
+        MobileAds.enableTest(true)
+        MobileAds.loadAd(this, AdFormat.BANNER, callback = object : MobileAds.AdCallback() {
+            override fun onLoaded() {
+                MobileAds.bannerAd(this@SplashActivity)?.apply {
+                    Log.e(TAG, "onLoaded: $this")
+                    binding.layoutAdBanner.removeAllViews()
+                    binding.layoutAdBanner.addView(this)
+                }
+            }
 
+            override fun onLoadError(error: LoadAdError) {
+                Log.e(TAG, "onLoadError: $error" )
+            }
+        })
     }
 
 }
