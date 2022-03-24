@@ -31,7 +31,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun adProcess() {
         MobileAds.enableTest(true)
-        MobileAds.loadAdTest(this, AdFormat.BANNER, callback = object : MobileAds.AdCallback() {
+        MobileAds.loadAd(this, AdFormat.BANNER, callback = object : MobileAds.AdCallback() {
             override fun onLoaded() {
                 MobileAds.bannerAd(this@SplashActivity)?.apply {
                     Log.e(TAG, "onLoaded: $this")

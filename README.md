@@ -1,6 +1,6 @@
 # iMobi SDK for Android
 
-### 1. What does the SDK do?
+## 1. What does the SDK do?
 
  - AdNetwork
     + Admob
@@ -21,7 +21,7 @@
     + Proguard
 
 
-### 2. Add SDK to App
+## 2. Add SDK to App
 
 #### 2.1. module -> build.gradle
 ```
@@ -30,6 +30,21 @@
    
 ```
 
-### 3. How to use
+## 3. How to use
+
 #### 3.1. Admob
-    Call ```MobileAds.enableTest(true)``` to Class<out Application> to activate test ad
+Add test ad (Class<out Application>)
+``MobileAds.enableTest(isEnable: Boolean)``
+
+Load AD Test
+``MobileAds.loadAd(activity: Activity, adFormat: AdFormat, callback: AdCallback? = null)``
+
+Load AD
+``MobileAds.loadAd(activity: Activity, adFormat: AdFormat, idAd: String, callback: AdCallback? = null)``
+
+Show AD
+``MobileAds.showAppOpenAd(activity: Activity)``
+``MobileAds.showInterstitialAd(activity: Activity, idAd: String)``
+``MobileAds.showRewardedAd(activity: Activity, idAd: String, callback: OnUserEarnedRewardListener)``
+``MobileAds.bannerAd(activity: Activity, idAd: String)`` fun return AdView
+``MobileAds.nativeAd(activity: Activity, idAd: String)`` fun return NativeAd
