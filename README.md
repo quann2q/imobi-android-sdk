@@ -7,18 +7,18 @@
     + FAN
 
  - Billing (Google Service)
-   + In-app purchase (Type INAPP)
-   + Subscription (Type SUBS)
+    + In-app purchase (Type INAPP)
+    + Subscription (Type SUBS)
    
  - Firebase Tracking
-   + FirebaseAnalytics
+    + FirebaseAnalytics
 
  - Release App with Shell Scrip
-   + Shell scrip code
+    + Shell scrip code
    
 - Encode
-   + ZKM
-   + Proguard
+    + ZKM
+    + Proguard
 
 
 ## 2. Add SDK to App
@@ -82,40 +82,40 @@ Check purchased
 
 #### 3.3. Firebase
  - Add the Firebase Android configuration file to your app
-   + Download ``google-services.json`` obtain your Firebase Android config file
-   + Move your config file into the module (app-level) directory of your app
+    + Download ``google-services.json`` obtain your Firebase Android config file
+    + Move your config file into the module (app-level) directory of your app
  
 - Enable Firebase products in your app
-   + Root-level (project-level) Gradle file (``build.gradle``)
-   ```
+    + Root-level (project-level) Gradle file (``build.gradle``)
+    ```
       classpath 'com.google.gms:google-services:4.3.10'
-   ```
+    ```
    
-   + In your module (app-level) Gradle file (usually ``app/build.gradle``)
-   ```
+    + In your module (app-level) Gradle file (usually ``app/build.gradle``)
+    ```
       apply plugin: 'com.google.gms.google-services'
          or
       plugins {
          id 'com.google.gms.google-services'
       }
-   ```
+    ```
 
  - Add Firebase SDKs to your app (without ``-ktx`` with Java)
-   ```
+    ```
       // Firebase
       implementation platform('com.google.firebase:firebase-bom:29.0.3')
       implementation 'com.google.firebase:firebase-crashlytics-ktx'
       implementation 'com.google.firebase:firebase-analytics-ktx'
       implementation 'com.google.firebase:firebase-auth-ktx'
       implementation 'com.google.firebase:firebase-firestore-ktx'
-   ```
+    ```
    
  - Use
-   + Declare object at the top of your activity
-   ```
+    + Declare object at the top of your activity
+    ```
       private lateinit var firebaseAnalytics: FirebaseAnalytics
-   ```
-   + Initialize it in the ``onCreate()`` method
-   ```
+    ```
+    + Initialize it in the ``onCreate()`` method
+    ```
       firebaseAnalytics = Firebase.analytics
-   ```
+    ```
