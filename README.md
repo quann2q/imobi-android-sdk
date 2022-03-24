@@ -3,8 +3,8 @@
 ## 1. What does the SDK do?
 
  - AdNetwork
-   + Admob
-   + FAN
+    + Admob
+    + FAN
 
  - Billing (Google Service)
    + In-app purchase (Type INAPP)
