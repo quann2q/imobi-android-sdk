@@ -35,7 +35,7 @@
 ## 3. How to use
 
 #### 3.1. Admob
-Add test ad (Call in Class<out Application>)
+Add test ad (Call in ``Class<out Application>``)
 ```
    MobileAds.enableTest(isEnable: Boolean)
 ```
@@ -60,7 +60,7 @@ Show AD
 ```
 
 #### 3.2. Billing
-Init Billing (Call in Class<out Application>) with params "billingConfig" is class extended BillingConfig
+Init Billing (Call in ``Class<out Application>``) with params "billingConfig" is class extended BillingConfig
 ```
    MobileBilling.initBilling(context: Context, billingConfig: Class<out BillingConfig>)
 ```
@@ -94,7 +94,7 @@ Check purchased
     + In your module (app-level) Gradle file (usually ``app/build.gradle``)
     ```
       apply plugin: 'com.google.gms.google-services'
-         or
+      --------- OR
       plugins {
          id 'com.google.gms.google-services'
       }
