@@ -28,6 +28,8 @@
    // Admob
    implementation 'com.google.android.gms:play-services-ads:20.6.0'
    
+    // Google Billing
+    implementation "com.android.billingclient:billing:4.1.0"
 ```
 
 ## 3. How to use
@@ -53,6 +55,27 @@ Show AD
     MobileAds.showAppOpenAd(activity: Activity)
     MobileAds.showInterstitialAd(activity: Activity, idAd: String)
     MobileAds.showRewardedAd(activity: Activity, idAd: String, callback: OnUserEarnedRewardListener)
-    MobileAds.bannerAd(activity: Activity, idAd: String) fun return AdView
-    MobileAds.nativeAd(activity: Activity, idAd: String) fun return NativeAd
+    MobileAds.bannerAd(activity: Activity, idAd: String) #return AdView
+    MobileAds.nativeAd(activity: Activity, idAd: String) #return NativeAd
+```
+
+#### 3.2. Billing
+Init Billing (Class<out Application>) with billingConfig is class extended BillingConfig
+```
+    MobileBilling.initBilling(context: Context, billingConfig: Class<out BillingConfig>)
+```
+
+Get products available to buy
+```
+    MobileBilling.queryDetails(callback: BillingQueryCallback)
+```
+
+Launch the purchase flow
+```
+    MobileBilling.launchBilling(activity: Activity, skuDetails: SkuDetails, purchaseCallback: PurchaseCallback)
+```
+
+Check purchased
+```
+    MobileBilling.verifyPurchase(callback: VerifyPurchaseCallback)
 ```

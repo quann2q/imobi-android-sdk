@@ -45,7 +45,7 @@ dependencies {
     // Fan
     implementation 'com.google.ads.mediation:facebook:6.8.0.0'
 
-    // Google IAP
+    // Google Billing
     implementation "com.android.billingclient:billing:4.1.0"
 
 

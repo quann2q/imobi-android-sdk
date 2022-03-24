@@ -4,35 +4,20 @@ import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.android.billingclient.api.*
-import com.n2q.sdk.billing.callback.BillingQueryCallback
-import com.n2q.sdk.billing.callback.PurchaseCallback
-import com.n2q.sdk.billing.callback.VerifyPurchaseCallback
+import com.n2q.sdk.billing.MobileBilling.*
 
-class BillingManager() : PurchasesUpdatedListener {
+class BillingManager : PurchasesUpdatedListener {
 
-    companion object {
-
-        private lateinit var mBillingConfig: BillingConfig
-        private var mInstance: BillingManager? = null
-
-        fun initConfig(billingConfig: Class<out BillingConfig>){
-            mBillingConfig = billingConfig.newInstance()
-        }
-
-        fun instance(): BillingManager {
-            if (mInstance == null) {
-                mInstance = BillingManager()
-            }
-            return mInstance as BillingManager
-        }
-    }
+    private lateinit var mBillingConfig: BillingConfig
 
     private lateinit var mBillingClient: BillingClient
     private val mSkuDetails = ArrayList<SkuDetails>()
 
     private var mPurchaseCallback: PurchaseCallback? = null
 
-    fun initBilling(context: Context) {
+    fun initBilling(context: Context, billingConfig: Class<out BillingConfig>) {
+        mBillingConfig = billingConfig.newInstance()
+
         mBillingClient = BillingClient.newBuilder(context)
             .enablePendingPurchases()
             .setListener(this)
@@ -48,7 +33,7 @@ class BillingManager() : PurchasesUpdatedListener {
     fun verifyPurchase(callback: VerifyPurchaseCallback) {
         if (mSkuDetails.isEmpty()) {
             connect(object : BillingQueryCallback {
-                override fun onFinished() {
+                override fun onFinished(skuDetails: ArrayList<SkuDetails>) {
                     verifyPurchase(callback)
                 }
             })
@@ -87,14 +72,12 @@ class BillingManager() : PurchasesUpdatedListener {
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                     productDetails(callback)
                 } else {
-                    callback.onFinished()
+                    callback.onFinished(ArrayList())
                 }
             }
 
         })
     }
-
-
 
     private fun productDetails(callback: BillingQueryCallback) {
         val productDetailsQuery = SkuDetailsParams
@@ -109,8 +92,8 @@ class BillingManager() : PurchasesUpdatedListener {
                     mSkuDetails.clear()
                     mSkuDetails.addAll(skus)
                 }
+                callback.onFinished(mSkuDetails)
             }
-            callback.onFinished()
         }
     }
 
