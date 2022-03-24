@@ -32,4 +32,4 @@
 
 ### 3. How to use
 3.1. Admob
-Call ```MobileAds.enableTest(true)``` to Class<out Application> to activate test ad 
+    Call ```MobileAds.enableTest(true)``` to Class<out Application> to activate test ad 
