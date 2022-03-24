@@ -34,7 +34,7 @@
 
 #### 3.1. Admob
 Add test ad (Class<out Application>)
-``MobileAds.enableTest(isEnable: Boolean)``
+```MobileAds.enableTest(isEnable: Boolean)```
 
 Load AD Test
 ``MobileAds.loadAd(activity: Activity, adFormat: AdFormat, callback: AdCallback? = null)``
