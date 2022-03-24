@@ -8,11 +8,16 @@ import com.n2q.sdk.billing.callback.BillingQueryCallback
 import com.n2q.sdk.billing.callback.PurchaseCallback
 import com.n2q.sdk.billing.callback.VerifyPurchaseCallback
 
-class BillingManager : PurchasesUpdatedListener {
+class BillingManager() : PurchasesUpdatedListener {
 
     companion object {
 
+        private lateinit var mBillingConfig: BillingConfig
         private var mInstance: BillingManager? = null
+
+        fun initConfig(billingConfig: Class<out BillingConfig>){
+            mBillingConfig = billingConfig.newInstance()
+        }
 
         fun instance(): BillingManager {
             if (mInstance == null) {
@@ -23,20 +28,9 @@ class BillingManager : PurchasesUpdatedListener {
     }
 
     private lateinit var mBillingClient: BillingClient
-    private val mSkus = ArrayList<String>()
-    private var mSkuType = BillingClient.SkuType.SUBS
     private val mSkuDetails = ArrayList<SkuDetails>()
 
     private var mPurchaseCallback: PurchaseCallback? = null
-
-    fun setSkus(skus: ArrayList<String>) {
-        mSkus.clear()
-        mSkus.addAll(skus)
-    }
-
-    fun setSkuType(type: String) {
-        mSkuType = type
-    }
 
     fun initBilling(context: Context) {
         mBillingClient = BillingClient.newBuilder(context)
@@ -60,7 +54,7 @@ class BillingManager : PurchasesUpdatedListener {
             })
         }
 
-        mBillingClient.queryPurchasesAsync(mSkuType) { result, purchases ->
+        mBillingClient.queryPurchasesAsync(mBillingConfig.skuType()) { result, purchases ->
             if (result.responseCode != BillingClient.BillingResponseCode.OK) {
                 callback.onPurchase(false)
                 return@queryPurchasesAsync
@@ -72,7 +66,7 @@ class BillingManager : PurchasesUpdatedListener {
                     return@queryPurchasesAsync
                 }
                 purchase.skus.forEach { sku ->
-                    if (mSkus.contains(sku)) {
+                    if (mBillingConfig.skus().contains(sku)) {
                         callback.onPurchase(true)
                         return@queryPurchasesAsync
                     }
@@ -105,8 +99,8 @@ class BillingManager : PurchasesUpdatedListener {
     private fun productDetails(callback: BillingQueryCallback) {
         val productDetailsQuery = SkuDetailsParams
             .newBuilder()
-            .setSkusList(mSkus)
-            .setType(mSkuType)
+            .setSkusList(mBillingConfig.skus())
+            .setType(mBillingConfig.skuType())
             .build()
 
         mBillingClient.querySkuDetailsAsync(productDetailsQuery) { result, skus ->

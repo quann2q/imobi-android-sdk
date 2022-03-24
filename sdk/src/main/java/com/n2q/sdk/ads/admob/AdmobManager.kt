@@ -22,12 +22,6 @@ class AdmobManager {
 
     /**
      * LOAD AD
-     * @param callback extended AdCallback
-     *          AdAppOpenCallback       for load App Open
-     *          AdInterstitialCallback  for load Interstitial
-     *          AdBannerCallback        for load Banner
-     *          AdNativeCallback        for load Native
-     *          AdRewardedCallback      for load Reward
      */
     fun loadAd(activity: Activity, adFormat: AdFormat, idAd: String = "", callback: AdCallback? = null) {
 

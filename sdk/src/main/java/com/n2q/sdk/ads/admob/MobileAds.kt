@@ -29,8 +29,12 @@ class MobileAds {
          * LOAD AD
          */
 
-        fun loadAd(activity: Activity, adFormat: AdFormat, idAd: String = "", callback: AdCallback? = null) {
-            var idTest = idAd
+        fun loadAd(activity: Activity, adFormat: AdFormat, idAd: String, callback: AdCallback? = null) {
+            admobManager.loadAd(activity, adFormat, idAd, callback)
+        }
+
+        fun loadAdTest(activity: Activity, adFormat: AdFormat, callback: AdCallback? = null) {
+            var idTest = ""
             if (mEnableTest) {
                 idTest = when (adFormat) {
                     AdFormat.APP_OPEN -> APP_OPEN_TEST
@@ -40,8 +44,7 @@ class MobileAds {
                     AdFormat.REWARDED -> REWARD_TEST
                 }
             }
-
-            admobManager.loadAd(activity, adFormat, idTest, callback)
+            loadAd(activity, adFormat, idTest, callback)
         }
 
         /**
