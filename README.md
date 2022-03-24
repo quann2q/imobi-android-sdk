@@ -39,16 +39,20 @@ Add test ad (Class<out Application>)
 ```
 
 Load AD Test
-``
+```
     MobileAds.loadAd(activity: Activity, adFormat: AdFormat, callback: AdCallback? = null)
-``
+```
 
 Load AD
-``MobileAds.loadAd(activity: Activity, adFormat: AdFormat, idAd: String, callback: AdCallback? = null)``
+```
+    MobileAds.loadAd(activity: Activity, adFormat: AdFormat, idAd: String, callback: AdCallback? = null)
+```
 
 Show AD
-``MobileAds.showAppOpenAd(activity: Activity)``
-``MobileAds.showInterstitialAd(activity: Activity, idAd: String)``
-``MobileAds.showRewardedAd(activity: Activity, idAd: String, callback: OnUserEarnedRewardListener)``
-``MobileAds.bannerAd(activity: Activity, idAd: String)`` fun return AdView
-``MobileAds.nativeAd(activity: Activity, idAd: String)`` fun return NativeAd
+```
+    MobileAds.showAppOpenAd(activity: Activity)
+    MobileAds.showInterstitialAd(activity: Activity, idAd: String)
+    MobileAds.showRewardedAd(activity: Activity, idAd: String, callback: OnUserEarnedRewardListener)
+    MobileAds.bannerAd(activity: Activity, idAd: String) fun return AdView
+    MobileAds.nativeAd(activity: Activity, idAd: String) fun return NativeAd
+```
