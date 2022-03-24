@@ -25,8 +25,8 @@
 
 #### 2.1. module -> build.gradle
 ```
-   // Admob
-   implementation 'com.google.android.gms:play-services-ads:20.6.0'
+    // Admob
+    implementation 'com.google.android.gms:play-services-ads:20.6.0'
    
     // Google Billing
     implementation "com.android.billingclient:billing:4.1.0"
@@ -35,7 +35,7 @@
 ## 3. How to use
 
 #### 3.1. Admob
-Add test ad (Class<out Application>)
+Add test ad (Call in Class<out Application>)
 ```
     MobileAds.enableTest(isEnable: Boolean)
 ```
@@ -60,7 +60,7 @@ Show AD
 ```
 
 #### 3.2. Billing
-Init Billing (Class<out Application>) with billingConfig is class extended BillingConfig
+Init Billing (Call in Class<out Application>) with params "billingConfig" is class extended BillingConfig
 ```
     MobileBilling.initBilling(context: Context, billingConfig: Class<out BillingConfig>)
 ```
@@ -79,3 +79,18 @@ Check purchased
 ```
     MobileBilling.verifyPurchase(callback: VerifyPurchaseCallback)
 ```
+
+#### 3.3. Firebase
+ - Add the Firebase Android configuration file to your app
+    + Download google-services.json obtain your Firebase Android config file
+    + Move your config file into the module (app-level) directory of your app
+ - Enable Firebase products in your app
+    + Root-level (project-level) Gradle file (``build.gradle``)
+   ```
+        classpath 'com.google.gms:google-services:4.3.10'
+   ```
+   
+    + In your module (app-level) Gradle file (usually app/build.gradle)
+   ```
+        apply plugin: 'com.google.gms.google-services'
+   ```

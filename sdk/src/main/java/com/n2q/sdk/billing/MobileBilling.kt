@@ -33,7 +33,7 @@ class MobileBilling {
     }
 
     interface BillingQueryCallback {
-        fun onFinished(skuDetails: ArrayList<SkuDetails>)
+        fun onFinished(skuDetails: ArrayList<SkuDetails>?)
     }
 
     interface PurchaseCallback {

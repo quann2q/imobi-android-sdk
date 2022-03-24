@@ -24,7 +24,9 @@ class BillingManager : PurchasesUpdatedListener {
             .build()
     }
 
-    fun launchBilling(activity: Activity, skuDetails: SkuDetails, purchaseCallback: PurchaseCallback){
+    private fun BillingConfig.SkuType.type() = if (this == BillingConfig.SkuType.SUBS) BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
+
+    fun launchBilling(activity: Activity, skuDetails: SkuDetails, purchaseCallback: PurchaseCallback) {
         mPurchaseCallback = purchaseCallback
         val billingFlowParams = BillingFlowParams.newBuilder().setSkuDetails(skuDetails).build()
         mBillingClient.launchBillingFlow(activity, billingFlowParams).responseCode
@@ -33,13 +35,13 @@ class BillingManager : PurchasesUpdatedListener {
     fun verifyPurchase(callback: VerifyPurchaseCallback) {
         if (mSkuDetails.isEmpty()) {
             connect(object : BillingQueryCallback {
-                override fun onFinished(skuDetails: ArrayList<SkuDetails>) {
-                    verifyPurchase(callback)
+                override fun onFinished(skuDetails: ArrayList<SkuDetails>?) {
+                    skuDetails?.apply { verifyPurchase(callback) }
                 }
             })
         }
 
-        mBillingClient.queryPurchasesAsync(mBillingConfig.skuType()) { result, purchases ->
+        mBillingClient.queryPurchasesAsync(mBillingConfig.skuType().type()) { result, purchases ->
             if (result.responseCode != BillingClient.BillingResponseCode.OK) {
                 callback.onPurchase(false)
                 return@queryPurchasesAsync
@@ -72,7 +74,7 @@ class BillingManager : PurchasesUpdatedListener {
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                     productDetails(callback)
                 } else {
-                    callback.onFinished(ArrayList())
+                    callback.onFinished(null)
                 }
             }
 
@@ -83,7 +85,7 @@ class BillingManager : PurchasesUpdatedListener {
         val productDetailsQuery = SkuDetailsParams
             .newBuilder()
             .setSkusList(mBillingConfig.skus())
-            .setType(mBillingConfig.skuType())
+            .setType(mBillingConfig.skuType().type())
             .build()
 
         mBillingClient.querySkuDetailsAsync(productDetailsQuery) { result, skus ->
@@ -93,7 +95,9 @@ class BillingManager : PurchasesUpdatedListener {
                     mSkuDetails.addAll(skus)
                 }
                 callback.onFinished(mSkuDetails)
+                return@querySkuDetailsAsync
             }
+            callback.onFinished(null)
         }
     }
 

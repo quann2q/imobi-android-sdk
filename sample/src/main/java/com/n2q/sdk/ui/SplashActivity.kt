@@ -4,9 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.ads.LoadAdError
-import com.n2q.sdk.ads.admob.AdFormat
-import com.n2q.sdk.ads.admob.MobileAds
+import com.android.billingclient.api.SkuDetails
+import com.n2q.sdk.billing.MobileBilling
 import com.n2q.sdk.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {
@@ -30,20 +29,14 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun adProcess() {
-        MobileAds.enableTest(true)
-        MobileAds.loadAd(this, AdFormat.BANNER, callback = object : MobileAds.AdCallback() {
-            override fun onLoaded() {
-                MobileAds.bannerAd(this@SplashActivity)?.apply {
-                    Log.e(TAG, "onLoaded: $this")
-                    binding.layoutAdBanner.removeAllViews()
-                    binding.layoutAdBanner.addView(this)
-                }
+        MobileBilling.verifyPurchase(object : MobileBilling.VerifyPurchaseCallback{
+            override fun onPurchase(isPurchased: Boolean) {
+                Log.e(TAG, "onPurchase: $isPurchased", )
             }
 
-            override fun onLoadError(error: LoadAdError) {
-                Log.e(TAG, "onLoadError: $error" )
-            }
         })
+
+
     }
 
 }
