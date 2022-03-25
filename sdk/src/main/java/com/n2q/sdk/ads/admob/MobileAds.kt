@@ -54,18 +54,18 @@ class MobileAds {
             admobManager.showAppOpenAd(activity)
         }
 
-        fun showInterstitialAd(activity: Activity, idAd: String) {
+        fun showInterstitialAd(activity: Activity, idAd: String = "") {
             admobManager.showInterstitialAd(activity, if (mEnableTest) INTERSTITIAL_TEST else idAd)
         }
 
-        fun showRewardedAd(activity: Activity, idAd: String, callback: OnUserEarnedRewardListener) {
+        fun showRewardedAd(activity: Activity, idAd: String = "", callback: OnUserEarnedRewardListener) {
             admobManager.showRewardedAd(activity, if (mEnableTest) REWARD_TEST else idAd, callback)
         }
 
-        fun bannerAd(activity: Activity, idAd: String) =
+        fun bannerAd(activity: Activity, idAd: String = "") =
             admobManager.bannerAd(activity, if (mEnableTest) BANNER_TEST else idAd)
 
-        fun nativeAd(activity: Activity, idAd: String) =
+        fun nativeAd(activity: Activity, idAd: String = "") =
             admobManager.nativeAd(activity, if (mEnableTest) NATIVE_TEST else idAd)
 
     }
